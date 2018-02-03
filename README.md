@@ -2,7 +2,7 @@
 
 __A highly customisable, open source server software for Minecraft: Pocket Edition written in PHP__
 
-[![Build Status](https://travis-ci.org/pmmp/PocketMine-MP.svg?branch=master)](https://travis-ci.org/pmmp/PocketMine-MP)
+[![Build Status](https://travis-ci.org/RebirthPE-Team/Tequilla.svg?branch=master)](https://travis-ci.org/RebirthPE-Team/Tequilla)
 
 ### Setup, help & support, FAQs
 Join our [Discord](https://discord.gg/EVkaJnv) this is how you can get assistance
