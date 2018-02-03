@@ -1,4 +1,4 @@
-# [![PocketMine-MP](http://cdn.pocketmine.net/img/PocketMine-MP-h.png)](https://pmmp.io)
+# [![PocketMine-MP](http://dubaidutyfree.s3.amazonaws.com/images/3021992_t1_1200x1200.jpg)](https://pmmp.io)
 
 __A highly customisable, open source server software for Minecraft: Pocket Edition written in PHP__
 
