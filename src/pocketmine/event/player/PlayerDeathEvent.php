@@ -29,6 +29,7 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 
 class PlayerDeathEvent extends EntityDeathEvent{
+	public static $handlerList = null;
 
 	/** @var Player */
 	protected $entity;

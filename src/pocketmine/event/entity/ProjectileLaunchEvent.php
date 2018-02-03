@@ -27,6 +27,7 @@ use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\Cancellable;
 
 class ProjectileLaunchEvent extends EntityEvent implements Cancellable{
+	public static $handlerList = null;
 
 	/**
 	 * @param Projectile $entity

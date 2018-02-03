@@ -24,5 +24,6 @@ declare(strict_types=1);
 namespace pocketmine\event\player;
 
 class PlayerBucketEmptyEvent extends PlayerBucketEvent{
+	public static $handlerList = null;
 
 }
