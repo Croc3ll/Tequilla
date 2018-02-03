@@ -28,6 +28,7 @@ use pocketmine\event\Cancellable;
 use pocketmine\level\Position;
 
 class EntityTeleportEvent extends EntityEvent implements Cancellable{
+	public static $handlerList = null;
 
 	/** @var Position */
 	private $from;

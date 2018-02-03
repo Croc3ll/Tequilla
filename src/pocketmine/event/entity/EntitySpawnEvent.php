@@ -35,6 +35,7 @@ use pocketmine\level\Position;
  * Called when a entity is spawned
  */
 class EntitySpawnEvent extends EntityEvent{
+	public static $handlerList = null;
 
 	/** @var int */
 	private $entityType;

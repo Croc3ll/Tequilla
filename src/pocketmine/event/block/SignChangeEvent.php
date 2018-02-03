@@ -31,6 +31,7 @@ use pocketmine\Player;
  * Called when a sign is changed by a player.
  */
 class SignChangeEvent extends BlockEvent implements Cancellable{
+	public static $handlerList = null;
 
 	/** @var Player */
 	private $player;

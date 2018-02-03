@@ -29,6 +29,7 @@ use pocketmine\network\SourceInterface;
  * Called when a network interface crashes, with relevant crash information.
  */
 class NetworkInterfaceCrashEvent extends NetworkInterfaceEvent{
+	public static $handlerList = null;
 
 	/**
 	 * @var \Throwable

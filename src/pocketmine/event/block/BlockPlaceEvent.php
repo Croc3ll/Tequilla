@@ -32,6 +32,7 @@ use pocketmine\Player;
  * Called when a player places a block
  */
 class BlockPlaceEvent extends BlockEvent implements Cancellable{
+	public static $handlerList = null;
 
 	/** @var Player */
 	protected $player;
