@@ -1,12 +1,11 @@
-# [![PocketMine-MP](http://dubaidutyfree.s3.amazonaws.com/images/3021992_t1_1200x1200.jpg)](https://pmmp.io)
+# [![Tequilla](http://dubaidutyfree.s3.amazonaws.com/images/3021992_t1_1200x1200.jpg)](https://discord.gg/EVkaJnv)
 
 __A highly customisable, open source server software for Minecraft: Pocket Edition written in PHP__
 
 [![Build Status](https://travis-ci.org/pmmp/PocketMine-MP.svg?branch=master)](https://travis-ci.org/pmmp/PocketMine-MP)
 
 ### Setup, help & support, FAQs
-Head over to the [documentation site](http://pmmp.readthedocs.org/).
-If you don't find what you're looking for there, [talk to a human](#discussion). Please do not use our issue tracker for support requests.
+Join our [Discord](https://discord.gg/EVkaJnv) this is how you can get assistance
 
 ### Discussion
 - [Forums](https://RebirthSoftware.net)
