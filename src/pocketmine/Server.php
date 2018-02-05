@@ -110,6 +110,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\Utils;
 use pocketmine\utils\UUID;
 use pocketmine\utils\VersionString;
+use raklib\utils\InternetAddress;
 
 /**
  * The class that manages everything
@@ -397,6 +398,10 @@ class Server{
 	 */
 	public function getIp() : string{
 		return $this->getConfigString("server-ip", "0.0.0.0");
+	}
+
+	public function getIpv6() : string{
+		return $this->getConfigString("server-ipv6", "::");
 	}
 
 	/**
@@ -773,8 +778,8 @@ class Server{
 				new DoubleTag("", $spawn->y),
 				new DoubleTag("", $spawn->z)
 			], NBT::TAG_Double),
-			new StringTag("Level", $this->getDefaultLevel()->getFolderName()),
-			//new StringTag("SpawnLevel", $this->getDefaultLevel()->getFolderName()),
+			new StringTag("Level", $this->getDefaultLevel()->getName()),
+			//new StringTag("SpawnLevel", $this->getDefaultLevel()->getName()),
 			//new IntTag("SpawnX", (int) $spawn->x),
 			//new IntTag("SpawnY", (int) $spawn->y),
 			//new IntTag("SpawnZ", (int) $spawn->z),
@@ -1527,8 +1532,6 @@ class Server{
 				if($processors > 0){
 					$poolSize = max(1, $processors);
 				}
-			}else{
-				$poolSize = (int) $poolSize;
 			}
 
 			ServerScheduler::$WORKERS = $poolSize;
@@ -1661,8 +1664,8 @@ class Server{
 
 			$this->enablePlugins(PluginLoadOrder::STARTUP);
 
-			$this->network->registerInterface(new RakLibInterface($this));
-
+			$this->network->registerInterface(new RakLibInterface($this, new InternetAddress($this->getIp() === "" ? "0.0.0.0" : $this->getIp(), $this->getPort(), 4)));
+			$this->network->registerInterface(new RakLibInterface($this, new InternetAddress($this->getIpv6() === "" ? "::" : $this->getIpv6(), $this->getPort(), 6)));
 
 			LevelProviderManager::addProvider(Anvil::class);
 			LevelProviderManager::addProvider(McRegion::class);
@@ -2337,7 +2340,7 @@ class Server{
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
 
-		$pk->entries[] = PlayerListEntry::createAdditionEntry($uuid, $entityId, $name, "", 0, $skin);
+		$pk->entries[] = PlayerListEntry::createAdditionEntry($uuid, $entityId, $name, $skin);
 		$this->broadcastPacket($players ?? $this->playerList, $pk);
 	}
 
@@ -2359,7 +2362,7 @@ class Server{
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
 		foreach($this->playerList as $player){
-			$pk->entries[] = PlayerListEntry::createAdditionEntry($player->getUniqueId(), $player->getId(), $player->getDisplayName(), "", 0, $player->getSkin());
+			$pk->entries[] = PlayerListEntry::createAdditionEntry($player->getUniqueId(), $player->getId(), $player->getDisplayName(), $player->getSkin());
 		}
 
 		$p->dataPacket($pk);

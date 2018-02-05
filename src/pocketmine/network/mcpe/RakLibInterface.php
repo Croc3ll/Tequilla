@@ -63,13 +63,13 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	/** @var ServerHandler */
 	private $interface;
 
-	public function __construct(Server $server){
+	public function __construct(Server $server, InternetAddress $address){
 		$this->server = $server;
 
 		$this->rakLib = new RakLibServer(
 			$this->server->getLogger(),
 			\pocketmine\COMPOSER_AUTOLOADER_PATH,
-			new InternetAddress($this->server->getIp() === "" ? "0.0.0.0" : $this->server->getIp(), $this->server->getPort(), 4),
+			$address,
 			(int) $this->server->getProperty("network.max-mtu-size", 1492)
 		);
 		$this->interface = new ServerHandler($this->rakLib, $this);
