@@ -31,9 +31,14 @@ use pocketmine\event\TranslationContainer;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class KillCommand extends VanillaCommand{
+class KillCommand extends VanillaCommand {
 
-	public function __construct(string $name){
+	/**
+	 * KillCommand constructor.
+	 *
+	 * @param $name
+	 */
+	public function __construct($name){
 		parent::__construct(
 			$name,
 			"%pocketmine.command.kill.description",
@@ -43,13 +48,22 @@ class KillCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.kill.self;pocketmine.command.kill.other");
 	}
 
-	public function execute(CommandSender $sender, string $commandLabel, array $args){
+	/**
+	 * @param CommandSender $sender
+	 * @param string $currentAlias
+	 * @param array $args
+	 *
+	 * @return bool
+	 */
+	public function execute(CommandSender $sender, $currentAlias, array $args){
 		if(!$this->testPermission($sender)){
 			return true;
 		}
 
 		if(count($args) >= 2){
-			throw new InvalidCommandSyntaxException();
+			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+
+			return false;
 		}
 
 		if(count($args) === 1){
@@ -59,24 +73,110 @@ class KillCommand extends VanillaCommand{
 				return true;
 			}
 
-			$player = $sender->getServer()->getPlayer($args[0]);
+			switch($args[0]){
+				case '@r':
+					$players = $sender->getServer()->getOnlinePlayers();
+					if(count($players) > 0){
+						$player = $players[array_rand($players)];
+					}else{
+						$sender->sendMessage("No players online");
 
-			if($player instanceof Player){
-				$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_SUICIDE, 1000));
+						return true;
+					}
 
-				if($ev->isCancelled()){
+					if($player instanceof Player){
+						$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_SUICIDE, 1000));
+
+						if($ev->isCancelled()){
+							return true;
+						}
+
+						$player->setLastDamageCause($ev);
+						$player->setHealth(0);
+
+						$sender->sendMessage("Killed " . $player->getName());
+					}
+
 					return true;
-				}
+				case '@e':
+					$count = 0;
+					if($sender instanceof Player){
+						foreach($sender->getLevel()->getEntities() as $entity){
+							if($entity instanceof Player){
+								if($entity->getGamemode() === Player::ADVENTURE or $entity->getGamemode() === Player::SURVIVAL){
+									$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_SUICIDE, $entity->getMaxHealth()));
 
-				$player->setLastDamageCause($ev);
-				$player->setHealth(0);
+									if($ev->isCancelled()){
+										return true;
+									}
 
-				Command::broadcastCommandMessage($sender, new TranslationContainer("commands.kill.successful", [$player->getName()]));
-			}else{
-				$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
+									$entity->setLastDamageCause($ev);
+									$entity->setHealth(0);
+								}
+							}else{
+								$entity->close();
+							}
+							$count++;
+						}
+					}else{
+						foreach($sender->getServer()->getDefaultLevel()->getEntities() as $entity){
+							if($entity instanceof Player){
+								if($entity->getGamemode() === Player::ADVENTURE or $entity->getGamemode() === Player::SURVIVAL){
+									$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_SUICIDE, $entity->getMaxHealth()));
+
+									if($ev->isCancelled()){
+										return true;
+									}
+
+									$entity->setLastDamageCause($ev);
+									$entity->setHealth(0);
+								}
+							}else{
+								$entity->close();
+							}
+							$count++;
+						}
+					}
+					$sender->sendMessage("Killed " . $count . " Entities");
+
+					return true;
+				case '@p':
+					$player = $sender;
+					if($player instanceof Player){
+						$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_SUICIDE, 1000));
+
+						if($ev->isCancelled()){
+							return true;
+						}
+
+						$player->setLastDamageCause($ev);
+						$player->setHealth(0);
+
+						Command::broadcastCommandMessage($sender, new TranslationContainer("commands.kill.successful", [$player->getName()]));
+					}else{
+						$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
+					}
+
+					return true;
+				default;
+					$player = $sender->getServer()->getPlayer($args[0]);
+					if($player instanceof Player){
+						$sender->getServer()->getPluginManager()->callEvent($ev = new EntityDamageEvent($player, EntityDamageEvent::CAUSE_SUICIDE, 1000));
+
+						if($ev->isCancelled()){
+							return true;
+						}
+
+						$player->setLastDamageCause($ev);
+						$player->setHealth(0);
+
+						Command::broadcastCommandMessage($sender, new TranslationContainer("commands.kill.successful", [$player->getName()]));
+					}else{
+						$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
+					}
+
+					return true;
 			}
-
-			return true;
 		}
 
 		if($sender instanceof Player){
@@ -96,7 +196,9 @@ class KillCommand extends VanillaCommand{
 			$sender->setHealth(0);
 			$sender->sendMessage(new TranslationContainer("commands.kill.successful", [$sender->getName()]));
 		}else{
-			throw new InvalidCommandSyntaxException();
+			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+
+			return false;
 		}
 
 		return true;
